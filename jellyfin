@@ -1,0 +1,9 @@
+sudo docker run -d \
+ --name jellyfin \
+ --user 1000 \
+ --volume /home/lord/.config/jellyfin/config:/config \
+ --volume /home/lord/.config/jellyfin/cache:/cache \
+ --net=host \
+ --mount type=bind,source=/home/lord/media,target=/media \
+ --restart=unless-stopped \
+ jellyfin/jellyfin
