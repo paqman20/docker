@@ -64,6 +64,17 @@ services:
       - /home/lord/docker/qbittorrent/downloads:/downloads #optional
     restart: unless-stopped
 
+ prowlarr:
+    image: linuxserver/prowlarr:develop
+    container_name: prowlarr
+    network_mode: service:wireguard
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+    volumes:
+      - /home/lord/docker/prowlarr/config:/config
+    restart: unless-stopped
 
 
 
