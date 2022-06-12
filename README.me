@@ -1,0 +1,39 @@
+* Media server setup
+** Users
+I Have chose to go with lord as my user so all the user paths are under "/home/lord/" This is of course can be changed depeding on your paticular setup or wants.
+** Media
+I will be going with a basic "/home/lord/media" setup. Inside the media folder will be "/movies" abd "/tv". So for the final path to movies is "/home/lord/media/movies" and for tv it is "/home/lord/media/tv"
+Below is the commands to make such directories
+#+begin_src shell
+  mkdir -p media/tv
+  mkidr -p media/movies
+#+end_src
+** Docker volume
+We will be using everthing in a docker directory so for example if we want our download folder for qbittorrent will be using the path of "/home/lord/docker/qbittorrent/downloads". This will be the same for all software
+down below is all of the directorys we will be creating before running our docker compose file. This is also assumed to be running in the home directory that is why we do not have the full directory tree.
+#+begin_src shell
+  mkdir -p /docker/wireguard/config
+  mkdir -p /docker/qbittorrent/config
+  mkidr -p /docker/qbittorrent/downloads
+  mkdir -p /docker/radarr/config
+  mkdir -p /docker/sonarr/config
+  mkdir -p /docker/prowlarr/config
+#+end_src
+** Wireguard
+This is a important part of the sever that will allow for out IP addr to remain hidden. In order for this container to operate as a client we MUST PUT THE WIREGUARD CONFIG FROM YOUR PROVIDER IN THE CONFIG FOLDER OF WIREGUARD.
+Also this small script will stop wireguard from allwoing outside connection. I got this from the Linux Sever documentation for using service:wireguard as the the network
+#+begin_src shell
+PostUp = DROUTE=$(ip route | grep default | awk '{print $3}'); HOMENET=192.168.0.0/16; HOMENET2=10.0.0.0/8; HOMENET3=172.16.0.0/12; ip route add $HOMENET3 via $DROUTE; ip route add $HOMENET2 via $DROUTE; ip route add $HOMENET via $DROUTE; iptables -I OUTPUT -d $HOMENET -j$
+PreDown = HOMENET=192.168.0.0/16; HOMENET2=10.0.0.0/8; HOMENET3=172.16.0.0/12; ip route delete $HOMENET; ip route delete $HOMENET2; ip route delete $HOMENET3; iptables -D OUTPUT ! -o %i -m mark ! --mark $(wg show %i fwmark) -m addrtype ! --dst-type LOCAL -j REJECT; iptabl$
+#+end_src
+Also we will open all of the corresponding ports for the diffrent web interfaces we will require.
+Qbittorrent - 8080
+radarr - 7676
+sonarr - 8989
+prowlarr - 9696
+** Sonarr
+The configuartion is very simples all we do is state the volume for tv, our qbittorrent download directory.
+** Raddar
+The configuartion is very simples all we do is state the volume for movies, our qbittorrent download directory.
+** Prowlarr
+The configuration is SUPER simples literaly only just the config directory nothing more
