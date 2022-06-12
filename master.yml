@@ -64,7 +64,7 @@ services:
       - /home/lord/docker/qbittorrent/downloads:/downloads #optional
     restart: unless-stopped
 
- prowlarr:
+  prowlarr:
     image: linuxserver/prowlarr:develop
     container_name: prowlarr
     network_mode: service:wireguard
