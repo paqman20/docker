@@ -14,10 +14,13 @@ services:
       - /lib/modules:/lib/modules
     ports:
       - 8080:8080
+      - 7878:7878
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
       - net.ipv4.conf.all.src_valid_mark=1
     restart: unless-stopped
+
+
   qbittorrent:
     image: linuxserver/qbittorrent
     container_name: qbittorrent
@@ -31,6 +34,25 @@ services:
       - /home/lord/docker/qbittorrent/downloads:/downloads
       - /home/lord/docker/qbittorrent/config:/config
     restart: unless-stopped
+
+  radarr:
+    image: linuxserver/radarr:latest
+    container_name: radarr
+    network_mode: service:wireguard
+    environment:
+      - PUID=0 #Cant get to work unless have root permizion  may be beacuse of exteral drive
+      - PGID=0
+      - TZ=America/New_York
+    volumes:
+      - /home/lord/docker/radarr/config:/config
+      - /home/lord/media/movies:/movies
+      - /home/lord/docker/qbittorrent/downloads:/downloads
+    restart: unless-stopped
+
+
+
+
+
 
 
 
