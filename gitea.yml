@@ -1,9 +1,8 @@
-version: "3"
-
 networks:
-  gitea:
-    external: false
+  traefik_default:
+    external: true
 
+version: "3"
 services:
   server:
     image: gitea/gitea:1.16.8
@@ -13,7 +12,7 @@ services:
       - USER_GID=1000
     restart: always
     networks:
-      - gitea
+      - traefik_default
     volumes:
       - ./gitea:/data
       - /etc/timezone:/etc/timezone:ro
@@ -21,3 +20,8 @@ services:
     ports:
       - "3000:3000"
       - "222:22"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.gitea.rule=Host(`git.mrbuttlicker.xyz`)"
+      - "traefik.http.services.gitea-websecure.loadbalancer.server.port=3000"
+      - "traefik.http.routers.gitea.tls=true"
