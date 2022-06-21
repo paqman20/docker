@@ -1,4 +1,6 @@
 * Media server setup
+** Reverse Proxy 
+I am just now learning Traefik and let me tell you this is gas, but man does it have a learning curve. So after lots of rearch I have discovered that as long as I choose the rigth labels it does what I want. Also make sure that we add the network so it is in the same network. I for rigth now have only added gitea but soon I hope to fully add jellyfin as well. So I just add it to the network and add the tags a BOOM reverse proxy this is pretty sweet. I will be learning more. Also SSl is being provided by cloudflares proxy feature that way I dont have to worry about making dumb mistakes like forgetting to renew a ssl cert and rendering everything usesless. 
 ** Users
 I Have chose to go with lord as my user so all the user paths are under "/home/lord/" This is of course can be changed depeding on your paticular setup or wants.
 ** Media
