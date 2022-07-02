@@ -1,7 +1,6 @@
 networks:
   traefik_default:
     external: true
-
 version: "3"
 services:
   server:
@@ -21,7 +20,7 @@ services:
       - "3000:3000"
       - "222:22"
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.gitea.rule=Host(`git.mrbuttlicker.xyz`)"
-      - "traefik.http.services.gitea-websecure.loadbalancer.server.port=3000"
-      - "traefik.http.routers.gitea.tls=true"
+    - "traefik.enable=true"
+    - "traefik.http.routers.gitea.rule=Host(`git.mrbuttlicker.xyz`)"
+    - "traefik.http.services.gitea-websecure.loadbalancer.server.port=3000"
+    - "traefik.http.routers.gitea.tls=true"
