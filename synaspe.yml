@@ -1,0 +1,39 @@
+networks:
+  traefik_default:
+    external: true
+
+version: '3'
+services:
+
+  synapse:
+    build:
+        context: ../..
+        dockerfile: docker/Dockerfile
+    image: docker.io/matrixdotorg/synapse:latest
+    restart: unless-stopped
+    environment:
+      - SYNAPSE_CONFIG_PATH=/data/homeserver.yaml
+    volumes:
+      - ./files:/data
+    depends_on:
+      - db
+    networks:
+      - traefik_default
+    ports:
+      - 8008:8008
+    labels:
+    - "traefik.enable=true"
+    - "traefik.http.routers.synaspe.rule=Host(`matrix.mrbuttlicker.xyz`)"
+    - "traefik.http.services.synaspe.loadbalancer.server.port=8008"
+    - "traefik.http.routers.synaspe.tls.certresolver=le"
+    - "traefik.http.routers.synaspe.tls=true"
+
+  db:
+    image: docker.io/postgres:12-alpine
+    environment:
+      - POSTGRES_USER=synapse
+      - POSTGRES_PASSWORD=changeme
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --lc-collate=C --lc-ctype=C
+    volumes:
+      - ./schemas:/var/lib/postgresql/data
+
