@@ -23,5 +23,5 @@ services:
     - "traefik.enable=true"
     - "traefik.http.routers.gitea.rule=Host(`git.mrbuttlicker.xyz`)"
     - "traefik.http.services.gitea-websecure.loadbalancer.server.port=3000"
+    - "traefik.http.routers.gitea.tls.certresolver=le"
     - "traefik.http.routers.gitea.tls=true"
-
