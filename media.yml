@@ -1,45 +1,24 @@
+version: "2.1"
 services:
-  wireguard:
-    image: linuxserver/wireguard
-    container_name: wireguard
-    cap_add:
-      - NET_ADMIN
-      - SYS_MODULE
+  sabnzbd:
+    image: lscr.io/linuxserver/sabnzbd:latest
+    container_name: sabnzbd
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=America/New_York
+      - TZ=Europe/London
     volumes:
-      - /home/lord/docker/wireguard/config:/config
-      - /lib/modules:/lib/modules
+      - /home/lord/docker/sabnzbd/config:/config
+      - /home/lord/docker/sabnzbd/downloads:/downloads
+  #    - /home/lord/docker/sabnzbd/downloads/incomplete:/incomplete-downloads
     ports:
       - 8080:8080
-      - 7878:7878
-      - 8989:8989
-    sysctls:
-      - net.ipv6.conf.all.disable_ipv6=0
-      - net.ipv4.conf.all.src_valid_mark=1
     restart: unless-stopped
-
-
-  qbittorrent:
-    image: linuxserver/qbittorrent
-    container_name: qbittorrent
-    network_mode: service:wireguard
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=America/New_York
-      - WEBUI_PORT=8080
-    volumes:
-      - /home/lord/docker/qbittorrent/downloads:/downloads
-      - /home/lord/docker/qbittorrent/config:/config
-    restart: unless-stopped
-
   radarr:
     image: linuxserver/radarr:latest
     container_name: radarr
-    network_mode: service:wireguard
+    ports:
+      - 7878:7878
     environment:
       - PUID=0
       - PGID=0
@@ -47,13 +26,13 @@ services:
     volumes:
       - /home/lord/docker/radarr/config:/config
       - /home/lord/media/movies:/movies
-      - /home/lord/docker/qbittorrent/downloads:/downloads
+      - /home/lord/docker/sabnzbd/downloads/:/downloads
     restart: unless-stopped
-
   sonarr:
     image: linuxserver/sonarr:latest
     container_name: sonarr
-    network_mode: service:wireguard
+    ports:
+      - 8989:8989
     environment:
       - PUID=0
       - PGID=0
@@ -61,13 +40,14 @@ services:
     volumes:
       - /home/lord/docker/sonnar/config:/config
       - /home/lord/media:/tv #optional
-      - /home/lord/docker/qbittorrent/downloads:/downloads #optional
+      - /home/lord/docker/sabnzbd/downloads/complete:/downloads #optional
     restart: unless-stopped
 
   prowlarr:
     image: linuxserver/prowlarr:develop
     container_name: prowlarr
-    network_mode: service:wireguard
+    ports:
+      - 9696:9696
     environment:
       - PUID=1000
       - PGID=1000
@@ -75,7 +55,6 @@ services:
     volumes:
       - /home/lord/docker/prowlarr/config:/config
     restart: unless-stopped
-
 
 
 
