@@ -1,3 +1,4 @@
+
 services:
   wireguard:
     image: linuxserver/wireguard
@@ -16,12 +17,11 @@ services:
       - 8080:8080
       - 7878:7878
       - 8989:8989
+      - 9696:9696
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
       - net.ipv4.conf.all.src_valid_mark=1
     restart: unless-stopped
-
-
   qbittorrent:
     image: linuxserver/qbittorrent
     container_name: qbittorrent
@@ -35,7 +35,6 @@ services:
       - /home/lord/docker/qbittorrent/downloads:/downloads
       - /home/lord/docker/qbittorrent/config:/config
     restart: unless-stopped
-
   radarr:
     image: linuxserver/radarr:latest
     container_name: radarr
@@ -49,7 +48,6 @@ services:
       - /home/lord/media/movies:/movies
       - /home/lord/docker/qbittorrent/downloads:/downloads
     restart: unless-stopped
-
   sonarr:
     image: linuxserver/sonarr:latest
     container_name: sonarr
@@ -63,7 +61,6 @@ services:
       - /home/lord/media:/tv #optional
       - /home/lord/docker/qbittorrent/downloads:/downloads #optional
     restart: unless-stopped
-
   prowlarr:
     image: linuxserver/prowlarr:develop
     container_name: prowlarr
@@ -75,7 +72,6 @@ services:
     volumes:
       - /home/lord/docker/prowlarr/config:/config
     restart: unless-stopped
-
 
 
 
