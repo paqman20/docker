@@ -1,0 +1,8 @@
+sudo docker run -d \
+--name caddy \
+--volume /site:/usr/share/caddy \
+--volume caddy_data:/data \
+--volume caddy_config:/config \
+--net=host \
+--restart=unless-stopped \
+caddy caddy reverse-proxy --from mrbuttlicker.xyz --to 127.0.0.1:8096
