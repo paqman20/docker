@@ -1,0 +1,46 @@
+networks:
+  traefik_default:
+    external: true
+
+version: '3'
+services:
+  vaultwarden:
+    image: vaultwarden/server:latest
+    container_name: vaultwarden
+    restart: always
+    environment:
+      WEBSOCKET_ENABLED: "true"  # Enable WebSocket notifications.
+      ADMIN_TOKEN: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+      ROCKET_PORT: "3000"
+      LOG_FILE: "/data/vaultwarden.log"
+    networks:
+      - traefik_default
+    ports:
+      - 3012:3012
+      - 3000:3000
+    volumes:
+      - ./vw-data:/data
+    labels:
+     - traefik.enable=true
+     - traefik.docker.network=traefik
+     - traefik.http.middlewares.redirect-https.redirectScheme.scheme=https
+     - traefik.http.middlewares.redirect-https.redirectScheme.permanent=true
+     - traefik.http.routers.bitwarden-ui-https.rule=Host(`DOMAIN`)
+     - traefik.http.routers.bitwarden-ui-https.entrypoints=websecure
+     - traefik.http.routers.bitwarden-ui-https.tls=true
+     - traefik.http.routers.bitwarden-ui-https.service=bitwarden-ui
+     - traefik.http.routers.bitwarden-ui-http.rule=Host(`DOMAIN`)
+     - traefik.http.routers.bitwarden-ui-http.entrypoints=web
+     - traefik.http.routers.bitwarden-ui-http.middlewares=redirect-https
+     - traefik.http.routers.bitwarden-ui-http.service=bitwarden-ui
+     - traefik.http.services.bitwarden-ui.loadbalancer.server.port=3000
+     - traefik.http.routers.bitwarden-websocket-https.rule=Host(`DOMAIN`) && Path(`/notifications/hub`)
+     - traefik.http.routers.bitwarden-websocket-https.entrypoints=websecure
+     - traefik.http.routers.bitwarden-websocket-https.tls=true
+     - traefik.http.routers.bitwarden-websocket-https.service=bitwarden-websocket
+     - traefik.http.routers.bitwarden-websocket-http.rule=Host(`DOMAIN`) && Path(`/notifications/hub`)
+     - traefik.http.routers.bitwarden-websocket-http.entrypoints=web
+     - traefik.http.routers.bitwarden-websocket-http.middlewares=redirect-https
+     - traefik.http.routers.bitwarden-websocket-http.service=bitwarden-websocket
+     - traefik.http.services.bitwarden-websocket.loadbalancer.server.port=3012
+
